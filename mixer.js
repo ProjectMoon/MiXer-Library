@@ -1,11 +1,5 @@
 /*
-Bugs:
-1. Adds props as base _mixer object
-2. Don't copy props more than once.
-2. (non)mixables are getting added to NaN apparently in props.
-5. Fix discrepancies between protize and Module.mixin
-
-Remove mixing at the instance level. Works on prototypes only.
+mixer.js: MiXer JavaScript library
 */
 
 (function() {

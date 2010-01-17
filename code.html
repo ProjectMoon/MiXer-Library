@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html><head><title>Example Code</title>
+<!-- copy from here if you want to paste this into a HTML document -->
+<style type="text/css">
+<!--
+body { background-color: #ffffff; color: #000000; }
+pre { font-family: "Courier New",Courier,monospace; font-size: 1em; color: #000000; }
+span.comment { color: #008080; font-weight: normal; }
+span.oper { color: #0000f0; font-weight: normal; }
+span.var { color: #d56000; font-weight: normal; }
+span.func { color: #aa00ff; font-weight: normal; }
+span.string { color: #777777; font-weight: normal; }
+span.num { color: #990000; font-weight: bold; }
+span.reg { color: #8d7f07; font-weight: normal; }
+-->
+</style></head><body>
+<pre>		
+<span class="oper">var</span> <span class="var">MyModule</span> <span class="oper">=</span> <span class="func">module</span>({
+	<span class="var">aNumber</span><span class="oper">:</span> <span class="num">5</span>,
+	<span class="var">aMixableNumber</span><span class="oper">:</span> <span class="func">mixable</span>(<span class="num">5</span>),
+	
+	<span class="var">aMethod</span><span class="oper">:</span> <span class="func">mixable</span>(<span class="oper">function</span>() {
+		<span class="func">alert</span>(<span class="var">this</span>.<span class="var">aMixableNumber</span>);
+	}),
+});
+		
+<span class="oper">var</span> <span class="var">MyOtherModule</span> <span class="oper">=</span> <span class="func">module</span>({
+	<span class="var">add</span><span class="oper">:</span> <span class="func">mixable</span>(<span class="oper">function</span>(<span class="var">amount</span>) {
+		<span class="var">this</span>.<span class="var">aMixableNumber</span> <span class="oper">+</span><span class="oper">=</span> <span class="var">amount</span>;
+	}),
+});
+		
+<span class="oper">function</span> <span class="func">doExample</span>() {
+	<span class="oper">var</span> <span class="var">MyClass</span> <span class="oper">=</span> <span class="var">MyModule</span>.<span class="func">protize</span>();
+	<span class="var">MyClass</span>.<span class="func">mixin</span>(<span class="var">MyOtherModule</span>);
+			
+	<span class="oper">var</span> <span class="var">x</span> <span class="oper">=</span> <span class="oper">new</span> <span class="func">MyClass</span>();
+	<span class="func">alert</span>(<span class="var">x</span>.<span class="var">aNumber</span>); <span class="comment">//undefined. MyModule.aNumber is not mixable</span>
+			
+	<span class="func">alert</span>(<span class="var">x</span>.<span class="var">aMixableNumber</span>); <span class="comment">//5.</span>
+	<span class="var">x</span>.<span class="func">aMethod</span>(); <span class="comment">//alerts 5</span>
+	
+	<span class="var">x</span>.<span class="func">add</span>(<span class="num">10</span>);
+	<span class="var">x</span>.<span class="func">aMethod</span>(); <span class="comment">//alerts 15</span>
+}</pre>
+<!-- stop copying here-->
+</body></html>

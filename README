@@ -1,3 +1,33 @@
 MiXer.js
 
-A library to make implementing mixins in JavaScript a bit easier.
+A library to make implementing mixins in JavaScript a bit easier. Below is a
+quick start guide. For actual documentation, see doc.html.
+
+Quick start:
+
+var MyModule = module({
+	aNumber: 5,
+	aMixableNumber: mixable(5),
+	
+	aMethod: mixable(function() {
+		alert(this.aMixableNumber);
+	}),
+});
+
+var MyOtherModule = module({
+	add: mixable(function(amount) {
+		this.aMixableNumber += amount;
+	}),
+});
+
+var MyClass = MyModule.protize();
+MyClass.mixin(MyOtherModule);
+
+var x = new MyClass();
+alert(x.aNumber); //undefined. MyModule.aNumber is not mixable
+
+alert(x.aMixableNumber); //5.
+x.aMethod(); //alerts 5
+
+x.add(10);
+x.aMethod(); //alerts 15
