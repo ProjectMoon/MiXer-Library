@@ -3,7 +3,13 @@ MiXer.js
 A library to make implementing mixins in JavaScript a bit easier. Below is a
 quick start guide. For actual documentation, see doc.html.
 
-Quick start:
+To build minified file:
+$> make
+
+To clean:
+$> make clean
+
+Coding quick start:
 
 var MyModule = module({
 	aNumber: 5,
