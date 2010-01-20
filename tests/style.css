@@ -1,0 +1,98 @@
+/*
+Unit Test styles
+*/
+
+html {
+	font-family: verdana, tahoma, arial;
+	line-height: 1.5em;
+}
+
+body {
+	margin-top: 1em;
+}
+
+.center {
+	margin: 0 auto;
+	width: 50%;
+	min-width: 500px;
+}
+
+#intro {
+}
+
+.banner {
+	border: 1px solid gray;
+	padding: 2px;
+	background: powderblue;
+	font-weight: bold;
+}
+
+.contentContainer {
+	margin-top: -1px;
+	border: 1px solid gray;
+}
+
+.content {
+	margin: 1em;
+}
+
+/* Give some room between button and table */
+#runTests {
+	text-align: center;
+	margin-bottom: 1em;
+}
+
+#footer {
+	margin-top: 1em;
+	color: slategray;
+	text-align: center;
+	font-size: .7em;
+}
+
+#tests {
+
+}
+
+.test {
+	overflow: hidden;
+	width: 100%;
+	padding-left: -1px;
+	border: 1px solid dimgray;
+	margin-top: -1px;
+	cursor: pointer;
+}
+
+.testName {
+	float: left;
+	margin-left: 1em;
+}
+
+.testResult {
+	float: right;
+	width: 5em;
+	text-align: center;
+}
+
+.testDescription {
+	margin: 1em;
+	margin-top: 10px;
+	clear: both;
+	float: left;
+	color: gray;
+	display: none;
+}
+
+.test .passed {
+	background-color: lightgreen;
+	padding: 0 4px;
+}
+
+.test .failed {
+	background-color: tomato;
+	padding: 0 4px;
+}
+
+.resultFooter {
+	text-align: center;
+	margin-top: 1em;
+}

@@ -88,7 +88,24 @@ UNIT_TESTS.add(new UnitTest("protize()", desc, function() {
 	}
 }));
 
-/*
-basic mixin:
-Tests a basic mixin of two modules. Two modules are created 
-*/
+
+//mixin function verification
+desc = "Verifies that the mixin function is only attached to a protized module's function object itself, not the function's prototype. Mixing is not done on the instance level.";
+UNIT_TESTS.add(new UnitTest("mixin function verification", desc, function() {
+	var X = mixableModule({
+		y: 5,
+		method: function() {
+			return (this.y == 5);
+		},
+	});
+	
+	var XClass = X.protize();
+	var xInst = new XClass();
+	
+	if (XClass.mixin && !XClass.prototype.mixin && !xInst.mixin) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));

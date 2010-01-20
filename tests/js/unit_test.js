@@ -24,6 +24,7 @@ function UnitTestCollection() {
 	this._tests = new Array();
 	this._t = 0;
 	this._times = 0;
+	this._successful = 0;
 }
 
 UnitTestCollection.prototype.add = function(test) {
@@ -33,6 +34,9 @@ UnitTestCollection.prototype.add = function(test) {
 UnitTestCollection.prototype.next = function() {
 	if (this._t < this._tests.length) {
 		var result = this._tests[this._t++].execute();
+		
+		if (result == true) this._successful++;
+		
 		return {
 			testName: this._tests[this._t - 1].name,
 			testDescription: this._tests[this._t - 1].description,
@@ -52,5 +56,13 @@ UnitTestCollection.prototype.times = function() {
 
 UnitTestCollection.prototype.reset = function() {
 	this._t = 0;
+	this._successful = 0;
 }
 
+UnitTestCollection.prototype.successful = function() {
+	return this._successful;
+}
+
+UnitTestCollection.prototype.size = function() {
+	return this._tests.length;
+}
