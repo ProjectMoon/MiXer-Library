@@ -1,1 +1,152 @@
-Unit tests go here!
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>MiXer Unit Tests</title>
+		<style type="text/css">
+		html {
+			font-family: verdana, tahoma, arial;
+			line-height: 1.5em;
+		}
+		
+		body {
+			margin-top: 1em;
+		}
+		
+		.container {
+			margin: 0 auto;
+			width: 50%;
+			min-width: 500px;
+		}
+		
+		#intro {
+		}
+		
+		.banner {
+			border: 1px solid gray;
+			padding: 2px;
+			background: powderblue;
+			font-weight: bold;
+		}
+		
+		.content {
+			margin-top: -1px;
+			padding: 2px 1em;
+			padding-top: 1em;
+			padding-bottom: 1em;
+			border: 1px solid gray;
+		}
+		
+		/* Give some room between button and table */
+		#runTests {
+			text-align: center;
+			margin-bottom: 1em;
+		}
+		
+		#footer {
+			margin-top: 1em;
+			color: silver;
+			text-align: center;
+			font-size: .7em;
+		}
+		
+		.test {
+			overflow: hidden;
+			width: 100%;
+			padding: 4px;
+			border: 1px solid dimgray;
+			margin-top: -1px;
+			cursor: pointer;
+		}
+		
+		.testName {
+			float: left;
+		}
+		
+		.testResult {
+			float: right;
+		}
+		
+		.testDescription {
+			margin-top: 10px;
+			clear: both;
+			float: left;
+			color: gray;
+			display: none;
+		}
+		
+		.test .passed {
+			background-color: lightgreen;
+			padding: 0 4px;
+		}
+		
+		.test .failed {
+			background-color: tomato;
+			padding: 0 4px;
+		}
+		</style>
+		
+		<script type="text/javascript" src="js/jquery-1.4.min.js"></script>
+		<script type="text/javascript" src="../src/mixer.js"></script>
+		<script type="text/javascript" src="js/unit_test.js"</script>
+		<script type="text/javascript" src="tests.js"></script>
+		
+		<script type="text/javascript">
+		$(function() {
+			$('.test').live('click', function() {
+				$(this).children('.testDescription').toggle('slide');
+			});
+			
+			$("#runTestsButton").click(function() {
+				$('#tests').empty();
+				//$(this).attr('disabled', 'disabled');
+				$(this).attr('value', 'Run Unit Tests Again');
+				
+				var test;
+				while ((result = UNIT_TESTS.next()) != 'done') {
+					var html = 
+					$('#tests').append(
+					"<div class='test'>" +
+					"	<span class='testName'>" + result.testName + "</span>" +
+					"	<span class='testResult " + result.cssClass + "'>" + result.testResult + "</span>" +
+					"	<span class='testDescription'> " + result.testDescription + "</span>"
+					);
+				}
+				
+				UNIT_TESTS.reset();
+				
+				var times = UNIT_TESTS.times();
+				var text = 'Ran ' + times + ' time' + ((times > 1) ? 's' : '') + '.';
+				$('#runs').html(text);
+			});
+		});
+		</script>
+	</head>
+	
+	<body>
+		<div class="container">
+			<div id="intro">
+				<div class="banner">MiXer Unit Tests</div>
+				<div class="content">
+					This HTML file contains a number of unit tests for the MiXer JavaScript library. You
+					should run these to verify that the library works properly. They will eventually be
+					moved to a simple Java application so that they can be integrated into the build
+					process more easily.
+				</div>
+			</div>
+			<div class="content">
+				<div id="runTests">
+					<input type='button' id="runTestsButton" value='Run Unit Tests' />
+					<div id="runs"></div>
+				</div>
+				<div id="tests" class="container">
+					<!-- Unit test results get appended here -->
+				</div>
+			</div>
+			
+			<div id="footer">
+				Now enhanced with jQuery Power&#8482;!
+			</div>
+		</div>
+	</body>
+</html>

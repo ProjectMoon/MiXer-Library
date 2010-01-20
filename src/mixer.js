@@ -4,8 +4,6 @@ mixer.js: MiXer JavaScript library
 
 (function() {
 
-if (!this.mixer) this.mixer = {};
-
 this.bindable = function() {
 	var tuple = {
 		mixable: true,
@@ -20,7 +18,7 @@ this.bindable = function() {
 this.mixable = function(symOrModule) {
 	//Is this a module?
 	if (symOrModule._mixer) {
-		mixer.mixerError('Warning', 'To make a mixable module, call mixableModule instead');
+		Mixer.mixerError('Warning', 'To make a mixable module, call mixableModule instead');
 	}
 	//Or is it a symbol?
 	else {
@@ -45,11 +43,11 @@ this.mixableModule = function(mod) {
 		count++;
 	}
 	
-	mixer._initProperties(mod);
+	Mixer._initProperties(mod);
 	count--; //because of _mixer.
 	mod.mixerProperties.mixables = count;
 	mod.mixerProperties.nonMixables = 0;
-	mixer._initModule(mod);
+	Mixer._initModule(mod);
 	
 	return mod;
 }
@@ -82,16 +80,16 @@ this.module = function(mod) {
 		}
 	}
 	
-	mixer._initProperties(mod);
+	Mixer._initProperties(mod);
 	mod.mixerProperties.mixables = mixables;
 	mod.mixerProperties.nonMixables = 0;
 	
-	mixer._initModule(mod);
+	Mixer._initModule(mod);
 	
 	return mod;
 };
 
-this.mixer = {
+this.Mixer = {
 	settings: {
 		collisions: 'append',
 	},
@@ -175,26 +173,26 @@ this.mixer = {
 		//Allow module to mix in to "classes."
 		mod.exportTo = function(target) {		
 			if (!target.prototype) {
-				mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
 				return;
 			}
 			else {
-				mixer._mixin(mod, target.prototype);
-				mixer._setupPrototype(target);
+				Mixer._mixin(mod, target.prototype);
+				Mixer._setupPrototype(target);
 			}
 		};
 		
 		//Single symbols
 		mod.exportSymbolTo = function(symbolName, target) {
-			mixer._mix(mod, target, symbolName);
+			Mxer._mix(mod, target, symbolName);
 		}
 		
 		mod.bind = function(symName, value, target) {
 			if (!target.prototype) {
-				mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
 			}
 			else {
-				mixer._bind(mod, target.prototype, symName, value);
+				Mixer._bind(mod, target.prototype, symName, value);
 			}
 		}
 		
@@ -207,7 +205,7 @@ this.mixer = {
 			if (!C.prototype) C.prototype = {};
 			
 			mod.exportTo(C);	
-			mixer._setupPrototype(C);
+			Mixer._setupPrototype(C);
 			
 			C.prototype.mixerProperties.protized = true;
 			return C;
@@ -226,19 +224,19 @@ this.mixer = {
 	_setupPrototype: function(target) {
 		target.mixin = function(module) {
 			if (!typeof this == 'function' || !this.prototype) {
-				mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
 			}
 			else {
-				mixer._mixin(module, this.prototype);
+				Mixer._mixin(module, this.prototype);
 			}
 		};
 		
 		target.mix = function(module, symbolName) {
 			if (!this.prototype) {
-				mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
 			}
 			else {
-				mixer._mix(module, this, symbolName);
+				Mixer._mix(module, this, symbolName);
 			}
 		};
 	},
@@ -248,12 +246,12 @@ this.mixer = {
 	_mixin: function(module, target) {
 		if (!target._mixer) {
 			target._mixer = {};
-			mixer._initProperties(target);
+			Mixer._initProperties(target);
 		}
 			
 		for (var s in module._mixer) {
 			if (!module._mixer[s].bindable) {
-				mixer._doMix(target, s, module._mixer[s]);
+				Mixer._doMix(target, s, module._mixer[s]);
 			}
 		}
 		
@@ -262,8 +260,8 @@ this.mixer = {
 	
 	//Implementation of mix for mixing in individual pieces of a module
 	_mix: function(module, target, symName) {
-		if (mixer.isMixable(module, module[symName])) {
-			mixer._doMix(target, symName, module[symName]);
+		if (Mixer.isMixable(module, module[symName])) {
+			Mixer._doMix(target, symName, module[symName]);
 		}
 	},
 	
@@ -271,18 +269,18 @@ this.mixer = {
 	_doMix: function(target, s, symbol) {
 		var props = target.mixerProperties;
 		
-		if (!mixer.containsFunction(target, s)) {
+		if (!Mixer.containsFunction(target, s)) {
 			target[s] = symbol;
 		}
 		else {
-			if (mixer.settings.collisions === 'append') {
+			if (Mixer.settings.collisions === 'append') {
 				if (!props.collisions[s]) {
 					props.collisions[s] = 1;
 				}
 				target[s + '_' + props.collisions[s]] = symbol;
 				props.collisions[s]++;
 			}
-			else if (mixer.settings.collisions === 'override') {
+			else if (Mixer.settings.collisions === 'override') {
 				target[s] = symbol;
 			}
 		}
@@ -298,7 +296,7 @@ this.mixer = {
 			}
 		}
 		catch (e) {
-			mixer.mixerError('Critical', 'symbol ' + symName + ' does not exist in target');
+			Mixer.mixerError('Critical', 'symbol ' + symName + ' does not exist in target');
 		}
 	},
 };
