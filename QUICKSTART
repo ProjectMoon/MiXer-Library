@@ -1,0 +1,31 @@
+The following is a very simple example. For actual documentation, see the doc/ directory.
+
+------------------------------
+
+var MyModule = module({
+	aNumber: 5,
+	aMixableNumber: mixable(5),
+	
+	aMethod: mixable(function() {
+		alert(this.aMixableNumber);
+	}),
+});
+
+var MyOtherModule = module({
+	add: mixable(function(amount) {
+		this.aMixableNumber += amount;
+	}),
+});
+
+var MyClass = MyModule.protize();
+MyClass.mixin(MyOtherModule);
+
+var x = new MyClass();
+alert(x.aNumber); //undefined. MyModule.aNumber is not mixable
+
+alert(x.aMixableNumber); //5.
+x.aMethod(); //alerts 5
+
+x.add(10);
+x.aMethod(); //alerts 15
+
