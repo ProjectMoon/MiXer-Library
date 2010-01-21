@@ -56,7 +56,6 @@ body {
 .test {
 	overflow: hidden;
 	width: 100%;
-	padding-left: -1px;
 	border: 1px solid dimgray;
 	margin-top: -1px;
 	cursor: pointer;
