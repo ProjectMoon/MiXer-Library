@@ -172,25 +172,27 @@ this.Mixer = {
 		mod.exportTo = function(target) {		
 			if (!target.prototype) {
 				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
-				return;
+				return false;
 			}
 			else {
 				Mixer._mixin(mod, target.prototype);
 				Mixer._setupPrototype(target);
+				return true;
 			}
 		};
 		
 		//Single symbols
 		mod.exportSymbolTo = function(symbolName, target) {
-			Mxer._mix(mod, target, symbolName);
+			return Mixer._mix(mod, target, symbolName);
 		}
 		
 		mod.bind = function(symName, value, target) {
 			if (!target.prototype) {
 				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+				return false;
 			}
 			else {
-				Mixer._bind(mod, target.prototype, symName, value);
+				return Mixer._bind(mod, target.prototype, symName, value);
 			}
 		}
 		
@@ -217,30 +219,35 @@ this.Mixer = {
 		target.mixin = function(module) {
 			if (!typeof this == 'function' || !this.prototype) {
 				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+				return false;
 			}
 			else {
 				Mixer._mixin(module, this.prototype);
+				return true;
 			}
 		};
 		
 		target.mix = function(module, symbolName) {
 			if (!this.prototype) {
 				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+				return false;
 			}
 			else {
-				Mixer._mix(module, this, symbolName);
+				return Mixer._mix(module, this, symbolName);
 			}
 		};
 		
 		target.override = function(module) {
 			if (!typeof this == 'function' || !this.prototype) {
 				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+				return false;
 			}
 			else {
 				var oldSetting = Mixer.settings.collisions;
 				Mixer.settings.collisions = 'override';
 				Mixer._mixin(module, this.prototype);
 				Mixer.settings.collisions = oldSetting;
+				return true;
 			}
 		}
 		
@@ -261,12 +268,17 @@ this.Mixer = {
 		}
 		
 		target.mixerProperties.append(module.mixerProperties);
+		return true;
 	},
 	
 	//Implementation of mix for mixing in individual pieces of a module
 	_mix: function(module, target, symName) {
 		if (Mixer.isMixable(module, module[symName])) {
 			Mixer._doMix(target, symName, module[symName]);
+			return true;
+		}
+		else {
+			return false;
 		}
 	},
 	
@@ -295,13 +307,16 @@ this.Mixer = {
 		try {
 			if (module._mixer[symName].bindable) {
 				target[symName] = value;
+				return true;
 			}
 			else {
-				alert('symbol not bindable');
+				Mixer.mixerError('Warning', 'symbol ' + symName + ' not bindable');
+				return false;
 			}
 		}
 		catch (e) {
 			Mixer.mixerError('Critical', 'symbol ' + symName + ' does not exist in target');
+			return false;
 		}
 	},
 };

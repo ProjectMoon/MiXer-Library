@@ -158,3 +158,85 @@ UNIT_TESTS.add(new UnitTest("override()", desc, function() {
 		return false;
 	}
 }));
+
+//exportTo
+desc = "Tests exportTo method of mixing in. The equivalent call is ClassName.mixin(Module).";
+UNIT_TESTS.add(new UnitTest("Module.exportTo()", desc, function() {
+	var X = mixableModule({
+		y: 5,
+		method: function() {
+			return 'from method 1';
+		},
+	});
+	
+	function XClass() {};
+	X.exportTo(XClass);
+	
+	var xInst = new XClass();
+	
+	if (XClass.mix && !XClass.prototype.mix && !xInst.mix) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));
+
+//bindable: undefined initial state
+desc = "Tests bindable symbols being undefined until they are bound.";
+UNIT_TESTS.add(new UnitTest("bindable(): initial state == undefined", desc, function() {
+	var X = mixableModule({
+		y: bindable(),
+	});
+	
+	var XClass = X.protize();
+	var xInst = new XClass();
+	
+	if (!xInst.y) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));
+
+//bindable
+desc = "Tests actual binding of bindable symbols by attempting to bind a symbol that is bindable.";
+UNIT_TESTS.add(new UnitTest("bindable(): successful binding", desc, function() {
+	var X = mixableModule({
+		y: bindable(),
+	});
+	
+	var XClass = X.protize();
+	var xInst = new XClass();
+	X.bind('y', 5, XClass);
+	
+	if (xInst.y == 5) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));
+
+//bindable
+desc = "Tests binding error checking by attempting to bind a symbol that is not bindable, but does exist";
+UNIT_TESTS.add(new UnitTest("bindable(): attempt to bind non-bindable", desc, function() {
+	var X = mixableModule({
+		y: 5,
+	});
+	
+	var XClass = X.protize();
+	var xInst = new XClass();
+	var err = Mixer.mixerError;
+	Mixer.mixerError = function() {}; //suppress alert message
+	
+	if (X.bind('y', 5, XClass) == false) {
+		Mixer.mixerError = err;
+		return true;
+	}
+	else {
+		Mixer.mixerError = err;
+		return false;
+	}
+}));
