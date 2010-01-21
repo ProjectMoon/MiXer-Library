@@ -109,3 +109,52 @@ UNIT_TESTS.add(new UnitTest("mixin function verification", desc, function() {
 		return false;
 	}
 }));
+
+//mix function verification
+desc = "Verifies that the mix function is only attached to a protized module's function object itself, not the function's prototype. Mixing is not done on the instance level.";
+UNIT_TESTS.add(new UnitTest("mix function verification", desc, function() {
+	var X = mixableModule({
+		y: 5,
+		method: function() {
+			return (this.y == 5);
+		},
+	});
+	
+	var XClass = X.protize();
+	var xInst = new XClass();
+	
+	if (XClass.mix && !XClass.prototype.mix && !xInst.mix) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));
+
+//Override test
+desc = "Verifies functionality of the override mixin.";
+UNIT_TESTS.add(new UnitTest("override()", desc, function() {
+	var X = mixableModule({
+		y: 5,
+		method: function() {
+			return 'from method 1';
+		},
+	});
+	
+	var Y = mixableModule({
+		method: function() {
+			return 'from method 2';
+		}
+	});
+	
+	var XClass = X.protize();
+	XClass.override(Y);
+	var xInst = new XClass();
+	
+	if (xInst.method() == 'from method 2') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));

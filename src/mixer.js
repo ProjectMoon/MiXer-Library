@@ -22,12 +22,10 @@ this.mixable = function(symOrModule) {
 	}
 	//Or is it a symbol?
 	else {
-		var tuple = {
+		return {
 			mixable: true,
 			symbol: symOrModule,
 		};
-	
-		return tuple;
 	}
 };
 
@@ -233,6 +231,18 @@ this.Mixer = {
 				Mixer._mix(module, this, symbolName);
 			}
 		};
+		
+		target.override = function(module) {
+			if (!typeof this == 'function' || !this.prototype) {
+				Mixer.mixerError('Critical', 'Mixing can only be done on prototypes');
+			}
+			else {
+				var oldSetting = Mixer.settings.collisions;
+				Mixer.settings.collisions = 'override';
+				Mixer._mixin(module, this.prototype);
+				Mixer.settings.collisions = oldSetting;
+			}
+		}
 		
 	},
 	
