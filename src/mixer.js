@@ -211,12 +211,6 @@ this.Mixer = {
 			return C;
 		}
 		
-		//Convenience method for creating an object from a module.
-		mod.object = function() {
-			var C = mod.protize();
-			return new C();
-		}
-		
 		mod.mixerProperties.module = true;	
 	},
 	
@@ -239,6 +233,7 @@ this.Mixer = {
 				Mixer._mix(module, this, symbolName);
 			}
 		};
+		
 	},
 	
 	//Implementation of mixin function. The accessible versions
@@ -300,7 +295,5 @@ this.Mixer = {
 		}
 	},
 };
-
-if (!this.$) this.$ = this.mixer;
 
 })();
