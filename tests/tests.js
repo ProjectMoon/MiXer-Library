@@ -2,6 +2,102 @@
 var UNIT_TESTS = new UnitTestCollection();
 var desc = ""; //temp storage for test descriptions
 
+//Mixer._doMix() success case
+desc = "Tests the Mixer._doMix function, the heart of MiXer. This is the success case. It adds a symbol to an object.";
+UNIT_TESTS.add(new UnitTest("Mixer.doMix() - success case", desc, function() {
+	function obj() {};
+	var target = new obj();
+	target._mixer = {};
+	Mixer._initProperties(target);
+	
+	var symbol = function() { return 'howdy-do'; }
+	var symName = 'symbol';
+	
+	Mixer._doMix(target, symName, symbol);
+	
+	if (target.symbol && target.symbol() == 'howdy-do') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));
+
+//Mixer._doMix() strict failure case
+desc = "Tests the Mixer._doMix function, the heart of MiXer. This is the failure case. It attempts to add the same symbol name twice. It should fail on the second addition and reject the addition.";
+UNIT_TESTS.add(new UnitTest("Mixer.doMix() - strict failure case", desc, function() {
+	function obj() {};
+	var target = new obj();
+	target._mixer = {};
+	Mixer._initProperties(target);
+	
+	var symbol = function() { return 'howdy-do'; }
+	var symbol2 = function() { return 'madness'; }
+	var symName = 'symbol';
+	
+	Mixer.settings.collisions = 'strict';
+	Mixer._doMix(target, symName, symbol);
+	var ret = Mixer._doMix(target, symName, symbol);
+	Mixer.settings.collisions = 'append';
+	
+	//ret should be false, so we test the opposite.
+	if (!ret && target.symbol() == 'howdy-do') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));
+
+//Mixer._doMix() append case
+desc = "Tests the Mixer._doMix function, the heart of MiXer. This is the append case. It attempts to add the same symbol name twice. It should add the symbol twice, but with _1 on the end the second time.";
+UNIT_TESTS.add(new UnitTest("Mixer.doMix() - append case", desc, function() {
+	function obj() {};
+	var target = new obj();
+	target._mixer = {};
+	Mixer._initProperties(target);
+	
+	var symbol = function() { return 'howdy-do'; }
+	var symbol2 = function() { return 'madness'; }
+	var symName = 'symbol';
+	
+	Mixer._doMix(target, symName, symbol);
+	Mixer._doMix(target, symName, symbol2);
+	
+	if (target.symbol && target.symbol_1 && target.symbol() == 'howdy-do' && target.symbol_1() == 'madness') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));
+
+//Mixer._doMix() override case
+desc = "Tests the Mixer._doMix function, the heart of MiXer. This is the override case. It attempts to add the same symbol name twice. It should override the first symbol with the second.";
+UNIT_TESTS.add(new UnitTest("Mixer.doMix() - override case", desc, function() {
+	function obj() {};
+	var target = new obj();
+	target._mixer = {};
+	Mixer._initProperties(target);
+	
+	
+	var symbol = function() { return 'howdy-do'; }
+	var symbol2 = function() { return 'madness'; }
+	var symName = 'symbol';
+	
+	Mixer.settings.collisions = 'override';
+	Mixer._doMix(target, symName, symbol);
+	Mixer._doMix(target, symName, symbol2);
+	Mixer.settings.collisions = 'append';
+	
+	if (target.symbol && !target.symbol_1 && target.symbol() == 'madness') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}));
+
 //mixable():
 desc = "Tests the mixable() function by creating a JSON object with a single member that has mixable() called on it, then verifies that the transformations performed by mixable() are present.";
 UNIT_TESTS.add(new UnitTest("mixable()", desc, function() {
@@ -201,7 +297,7 @@ UNIT_TESTS.add(new UnitTest("bindable(): initial state == undefined", desc, func
 }));
 
 //bindable
-desc = "Tests actual binding of bindable symbols by attempting to bind a symbol that is bindable.";
+desc = "Tests binding of bindable symbols by attempting to bind a symbol that is bindable. This is the 'success case' of symbol binding.";
 UNIT_TESTS.add(new UnitTest("bindable(): successful binding", desc, function() {
 	var X = mixableModule({
 		y: bindable(),
@@ -220,7 +316,7 @@ UNIT_TESTS.add(new UnitTest("bindable(): successful binding", desc, function() {
 }));
 
 //bindable
-desc = "Tests binding error checking by attempting to bind a symbol that is not bindable, but does exist";
+desc = "Tests binding error checking by attempting to bind a symbol that is not bindable, but does exist.";
 UNIT_TESTS.add(new UnitTest("bindable(): attempt to bind non-bindable", desc, function() {
 	var X = mixableModule({
 		y: 5,
@@ -232,6 +328,28 @@ UNIT_TESTS.add(new UnitTest("bindable(): attempt to bind non-bindable", desc, fu
 	Mixer.mixerError = function() {}; //suppress alert message
 	
 	if (X.bind('y', 5, XClass) == false) {
+		Mixer.mixerError = err;
+		return true;
+	}
+	else {
+		Mixer.mixerError = err;
+		return false;
+	}
+}));
+
+//bindable
+desc = "Tests binding error checking by attempting to bind a symbol that does not exist.";
+UNIT_TESTS.add(new UnitTest("bindable(): attempt to bind non-existent symbol", desc, function() {
+	var X = mixableModule({
+		y: 5,
+	});
+	
+	var XClass = X.protize();
+	var xInst = new XClass();
+	var err = Mixer.mixerError;
+	Mixer.mixerError = function() {}; //suppress alert message
+	
+	if (X.bind('x', 5, XClass) == false) {
 		Mixer.mixerError = err;
 		return true;
 	}

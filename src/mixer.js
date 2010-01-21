@@ -175,9 +175,9 @@ this.Mixer = {
 				return false;
 			}
 			else {
-				Mixer._mixin(mod, target.prototype);
+				var ret = Mixer._mixin(mod, target.prototype);
 				Mixer._setupPrototype(target);
-				return true;
+				return ret;
 			}
 		};
 		
@@ -222,8 +222,7 @@ this.Mixer = {
 				return false;
 			}
 			else {
-				Mixer._mixin(module, this.prototype);
-				return true;
+				return Mixer._mixin(module, this.prototype);
 			}
 		};
 		
@@ -245,9 +244,9 @@ this.Mixer = {
 			else {
 				var oldSetting = Mixer.settings.collisions;
 				Mixer.settings.collisions = 'override';
-				Mixer._mixin(module, this.prototype);
+				var ret = Mixer._mixin(module, this.prototype);
 				Mixer.settings.collisions = oldSetting;
-				return true;
+				return ret;
 			}
 		}
 		
@@ -256,6 +255,8 @@ this.Mixer = {
 	//Implementation of mixin function. The accessible versions
 	//call this with different parameters.
 	_mixin: function(module, target) {
+		var result = false;
+		
 		if (!target._mixer) {
 			target._mixer = {};
 			Mixer._initProperties(target);
@@ -263,19 +264,18 @@ this.Mixer = {
 			
 		for (var s in module._mixer) {
 			if (!module._mixer[s].bindable) {
-				Mixer._doMix(target, s, module._mixer[s]);
+				result = Mixer._doMix(target, s, module._mixer[s]);
 			}
 		}
 		
 		target.mixerProperties.append(module.mixerProperties);
-		return true;
+		return result;
 	},
 	
 	//Implementation of mix for mixing in individual pieces of a module
 	_mix: function(module, target, symName) {
 		if (Mixer.isMixable(module, module[symName])) {
-			Mixer._doMix(target, symName, module[symName]);
-			return true;
+			return Mixer._doMix(target, symName, module[symName]);
 		}
 		else {
 			return false;
@@ -299,6 +299,9 @@ this.Mixer = {
 			}
 			else if (Mixer.settings.collisions === 'override') {
 				target[s] = symbol;
+			}
+			else {
+				return false;
 			}
 		}
 	},
