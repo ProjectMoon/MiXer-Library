@@ -8,7 +8,7 @@ this.bindable = function() {
 	var tuple = {
 		mixable: true,
 		bindable: true,
-		symbol: '',
+		symbol: ''
 	}
 	
 	return tuple;
@@ -24,7 +24,7 @@ this.mixable = function(symOrModule) {
 	else {
 		return {
 			mixable: true,
-			symbol: symOrModule,
+			symbol: symOrModule
 		};
 	}
 };
@@ -88,6 +88,10 @@ this.module = function(mod) {
 };
 
 this.Mixer = {
+	Namespace: function(ns, func) {
+		func(ns);	
+	},
+	
 	settings: {
 		collisions: 'append',
 	},
@@ -321,7 +325,7 @@ this.Mixer = {
 			Mixer.mixerError('Critical', 'symbol ' + symName + ' does not exist in target');
 			return false;
 		}
-	},
+	}
 };
 
 })();
